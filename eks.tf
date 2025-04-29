@@ -8,33 +8,31 @@ module "eks" {
   subnet_ids = var.subnet_ids
   vpc_id     = var.vpc_id
 
+  enable_irsa = true
+
   eks_managed_node_groups = {
     unencrypted_nodes = {
+      name            = "unencrypted-ng"
       desired_size    = var.desired_capacity
       max_size        = 3
       min_size        = 1
       instance_types  = [var.node_instance_type]
       disk_size       = 20
       encrypted       = false
-      # kms_key_id    = aws_kms_key.eks_cmk.arn
 
       tags = {
         Name = "eks-node-unencrypted-poc"
       }
     }
-    iam_role_additional_policies = {}
-    aws_auth_users = [
-    {
-      userarn  = "arn:aws:sts::456130209114:federated-user/nct-admin/Nithin.NP@news.co.uk"
-      username = "nithin"
-      groups   = ["system:masters"]
-    }
-  ]
   }
 
-  # 🔐 Add this to gain access to the clust
-
-  enable_irsa = true
+  access_entries = {
+    admin_user = {
+      principal_arn = "arn:aws:sts::456130209114:federated-user/nct-admin/Nithin.NP@news.co.uk"
+      kubernetes_groups = ["system:masters"]
+      type = "STANDARD"
+    }
+  }
 
   tags = {
     Environment = "nonprod"
