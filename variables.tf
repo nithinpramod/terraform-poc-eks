@@ -3,7 +3,7 @@ variable "region" {
 }
 
 variable "cluster_name" {
-  default = "eks-unencrypted-demo"
+  default = "eks-node-unencrypted-poc"
 }
 
 variable "subnet_ids" {

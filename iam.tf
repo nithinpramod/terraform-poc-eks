@@ -15,6 +15,12 @@ resource "aws_iam_role" "eks_node_role" {
   })
 }
 
+resource "aws_iam_instance_profile" "eks_node_instance_profile" {
+  name = "eks-node-instance-profile"
+  role = aws_iam_role.eks_node_role.name
+}
+
+
 resource "aws_iam_role_policy_attachment" "eks_worker_node_policy" {
   role       = aws_iam_role.eks_node_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
