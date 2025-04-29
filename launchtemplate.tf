@@ -1,3 +1,6 @@
+provider "aws" {
+  region = var.region
+}
 resource "aws_launch_template" "eks_encrypted_lt" {
   name_prefix   = "eks-encrypted-lt-"
   image_id      = "ami-0713ff1f7e8b62b45"  # <-- your encrypted AMI
