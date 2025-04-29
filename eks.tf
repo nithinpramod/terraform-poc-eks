@@ -1,5 +1,3 @@
-
-# EKS Cluster and Node Group
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.11.0"
@@ -12,20 +10,29 @@ module "eks" {
 
   eks_managed_node_groups = {
     unencrypted_nodes = {
-      desired_size = var.desired_capacity
-      max_size     = 3
-      min_size     = 1
-
-      instance_types = [var.node_instance_type]
-      disk_size      = 20  # EBS volume, unencrypted by default
+      desired_size    = var.desired_capacity
+      max_size        = 3
+      min_size        = 1
+      instance_types  = [var.node_instance_type]
+      disk_size       = 20
       encrypted       = false
-      # kms_key_id      = aws_kms_key.eks_cmk.arn  # or use var.kms_key_id
+      # kms_key_id    = aws_kms_key.eks_cmk.arn
 
       tags = {
         Name = "eks-node-unencrypted-poc"
       }
     }
+    iam_role_additional_policies = {}
+    aws_auth_users = [
+    {
+      userarn  = "arn:aws:sts::456130209114:federated-user/nct-admin/Nithin.NP@news.co.uk"
+      username = "nithin"
+      groups   = ["system:masters"]
+    }
+  ]
   }
+
+  # 🔐 Add this to gain access to the clust
 
   enable_irsa = true
 
